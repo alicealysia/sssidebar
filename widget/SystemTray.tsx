@@ -13,12 +13,12 @@ export function SystemTray() {
   const tray = Tray.get_default();
   
   return (
-    <box orientation={1}>
+    <box orientation={1} className="TrayBox">
       {
         bind(tray, "items").as(items => items.map(item => {
           const menu = createMenu(item.menuModel, item.actionGroup);
           return(
-            <button onClick={(button, event) => {
+            <button className="TrayButton" onClick={(button, event) => {
                 if (event.button !== 1 && menu) {
                   menu.popup_at_widget(button, Gdk.Gravity.NORTH, Gdk.Gravity.NORTH, null);
                 } else {
@@ -26,7 +26,7 @@ export function SystemTray() {
                 }
               }}
               tooltipText={item.get_title()}
-              child = {<icon icon={item.icon_name} />
+              child = {<icon className="TrayIcon" icon={item.icon_name} />
             }/>
           )
         })

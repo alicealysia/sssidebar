@@ -1,6 +1,6 @@
 // Source + Credits for this file go to: https://github.com/maxverbeek/astalconfig/blob/master/service/niri.ts
 
-import { App, Astal, Gdk } from "astal/gtk3"
+import { App, Astal, Gdk, Gtk } from "astal/gtk3"
 import { Variable, bind } from "astal"
 import Niri, { OutputsWithWorkspacesWithWindows, Window, WorkspaceWithWindows } from "../services/niri"
 
@@ -62,11 +62,8 @@ function Workspace(workspace: WorkspaceWithWindows, showInactiveIcons: boolean) 
 
     const className = traits.join(' ')
     const showIcons = (workspace.is_active || showInactiveIcons) && workspace.windows.length > 0
-    return <button onClick={() => niri.focusWorkspaceId(workspace.id)} className={className}>
-        <box spacing={showIcons ? 5 : 0}>
-            {/*<label className="ws-idx" label={workspace.idx.toString()} />*/}
-            {showIcons && workspace.windows.filter(win => win.id == workspace.active_window_id).map((win: any) => <icon icon={guessAppIcon(win)} />)}
-        </box>
+    return <button onClick={() => niri.focusWorkspaceId(workspace.id)} className={workspace.is_active? "WorkspaceBtnActive": "WorkspaceBtnInactive"}>
+        {showIcons && workspace.windows.filter(win => win.id == workspace.active_window_id).map((win: any) => <icon className="WorkspaceIcon" icon={guessAppIcon(win)}  />)}
     </button>
 }
 

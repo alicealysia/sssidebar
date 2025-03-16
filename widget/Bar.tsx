@@ -10,12 +10,12 @@ export function SystrayWindow(gdkmonitor: Gdk.Monitor) {
 
     return (
         <window
-        className="Bar"
+        className="TrayWindow"
         gdkmonitor={gdkmonitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
         anchor={RIGHT}
         application={App}>
-        <centerbox orientation={1}>
+        <centerbox orientation={1} className="TrayContainer">
             <SystemTray />
         </centerbox>
         </window>
@@ -27,7 +27,7 @@ export function WorkspaceWindow(gdkmonitor: Gdk.Monitor) {
 
     return (
         <window
-            className="Bar"
+            className="WorkspaceWindow"
             gdkmonitor={gdkmonitor}
             exclusivity={Astal.Exclusivity.EXCLUSIVE}
             anchor={LEFT}
