@@ -1,10 +1,6 @@
 import Tray from "gi://AstalTray";
-import {bind} from "astal";
-import AstalApps from "gi://AstalApps?version=0.1";
-import Gio from "gi://Gio?version=2.0";
-import {Gtk} from "astal/gtk3";
-import Gdk from "gi://Gdk?version=3.0";
-import Gravity = Gdk.Gravity;
+import {bind, Gio} from "astal";
+import {Gtk, Gdk} from "astal/gtk3";
 
 const createMenu = (menuModel: Gio.MenuModel, actionGroup: Gio.ActionGroup | null): Gtk.Menu => {
   const menu = Gtk.Menu.new_from_model(menuModel);
@@ -15,10 +11,7 @@ const createMenu = (menuModel: Gio.MenuModel, actionGroup: Gio.ActionGroup | nul
 
 export function SystemTray() {
   const tray = Tray.get_default();
-  const items = bind(tray, "items");
-  let app = new AstalApps.Application();
-  const apps = new AstalApps.Apps();
-
+  
   return (
     <box orientation={1}>
       {
@@ -27,7 +20,7 @@ export function SystemTray() {
           return(
             <button onClick={(button, event) => {
                 if (event.button !== 1 && menu) {
-                  menu.popup_at_widget(button, Gravity.NORTH, Gravity.NORTH, null);
+                  menu.popup_at_widget(button, Gdk.Gravity.NORTH, Gdk.Gravity.NORTH, null);
                 } else {
                   item.activate(1,1);
                 }

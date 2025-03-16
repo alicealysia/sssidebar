@@ -7,7 +7,8 @@ const time = Variable("").poll(1000, "date")
 export default function Bar(gdkmonitor: Gdk.Monitor) {
     const { TOP, LEFT, RIGHT, BOTTOM } = Astal.WindowAnchor
 
-    return <window
+    return (
+        <window
         className="Bar"
         gdkmonitor={gdkmonitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
@@ -16,5 +17,6 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         <centerbox orientation={1}>
             <SystemTray />
         </centerbox>
-    </window>
+        </window>
+    )
 }
