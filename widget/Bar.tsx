@@ -1,12 +1,11 @@
-import { App, Astal, Gtk, Gdk } from "astal/gtk3"
-import { Variable } from "astal"
+import { App, Astal, Gdk } from "astal/gtk3"
 import { SystemTray } from "./SystemTray"
 import Workspaces from "./Workspaces";
 
-const time = Variable("").poll(1000, "date")
+//const time = Variable("").poll(1000, "date")
 
 export function SystrayWindow(gdkmonitor: Gdk.Monitor) {
-    const { TOP, LEFT, RIGHT, BOTTOM } = Astal.WindowAnchor
+    const { RIGHT} = Astal.WindowAnchor
 
     return (
         <window
@@ -23,11 +22,11 @@ export function SystrayWindow(gdkmonitor: Gdk.Monitor) {
 }
 
 export function WorkspaceWindow(gdkmonitor: Gdk.Monitor) {
-    const { TOP, LEFT, RIGHT, BOTTOM } = Astal.WindowAnchor
+    const { LEFT} = Astal.WindowAnchor
 
     return (
         <window
-            className="WorkspaceWindow"
+            className="workspace-window"
             gdkmonitor={gdkmonitor}
             exclusivity={Astal.Exclusivity.EXCLUSIVE}
             anchor={LEFT}

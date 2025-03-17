@@ -13,20 +13,20 @@ export function SystemTray() {
   const tray = Tray.get_default();
   
   return (
-    <box orientation={1} className="TrayBox">
+    <box orientation={1} className="tray-box">
       {
         bind(tray, "items").as(items => items.map(item => {
           const menu = createMenu(item.menuModel, item.actionGroup);
           return(
-            <button className="TrayButton" onClick={(button, event) => {
+            <button className="tray-button" onClick={(button, event) => {
                 if (event.button !== 1 && menu) {
                   menu.popup_at_widget(button, Gdk.Gravity.NORTH, Gdk.Gravity.NORTH, null);
                 } else {
                   item.activate(1,1);
                 }
               }}
-              tooltipText={item.get_title()}
-              child = {<icon className="TrayIcon" icon={item.icon_name} />
+                    tooltipText={item.get_title()}
+                    child = {<icon className="tray-icon" gicon={item.gicon} />
             }/>
           )
         })

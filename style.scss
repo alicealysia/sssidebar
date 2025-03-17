@@ -4,15 +4,15 @@ $bg-color: #{"@theme_bg_color"};
 $accent-color: #{"@theme_selected_bg_color"};
 
 
-.TrayBox {
+.tray-box {
     background-color: $bg-color;
     border-radius: 12px;
 }
 
-.TrayButton {
+.tray-button {
     background-color: rgba(0,0,0,0);
 }
-.TrayIcon {
+.tray-icon {
     background-color: rgba(0,0,0,0);
 }
 
@@ -20,36 +20,36 @@ $accent-color: #{"@theme_selected_bg_color"};
 //    background-color: rgba(0,0,0,0);
 //}
 
-.WorkspaceBtnActive {
+.workspace-active-button {
     border-radius: 50%;
     background-color: $accent-color;
     padding: 0;
     margin: 0;
 }
 
-.WorkspaceWindow {
+.workspace-window {
     padding: 0;
     margin: 0;
 }
 
-.Workspaces {
+.workspaces {
     padding: 0;
     margin: 0;
 }
 
-.WorkspaceBtnInactive {
+.workspace-inactive-button {
     background-color: rgba(0,0,0,0);
     padding: 0;
     margin: 0;
 }
 
-.WorkspaceBtnInactive:hover {
+.workspace-inactive-button:hover {
     border-radius: 50%;
     padding: 0;
     margin: 0;
 }
 
-.WorkspaceIcon {
+.workspace-button-icon {
     min-width: 42px;
     min-height: 42px;
     font-size: 32px;

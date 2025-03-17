@@ -1,0 +1,13 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CssMissingSemicolon" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Eslint" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION" />
+    <inspection_tool class="JSHint" enabled="false" level="WEAK WARNING" enabled_by_default="false" editorAttributes="TEXT_STYLE_SUGGESTION" />
+    <inspection_tool class="StandardJS" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION" />
+    <inspection_tool class="Stylelint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="TsLint" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="TEXT_STYLE_SUGGESTION">
+      <option name="useSeverityFromConfigFile" value="false" />
+    </inspection_tool>
+  </profile>
+</component>

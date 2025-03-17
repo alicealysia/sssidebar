@@ -1,7 +1,7 @@
 // Source + Credits for this file go to: https://github.com/maxverbeek/astalconfig/blob/master/service/niri.ts
 
-import { App, Astal, Gdk, Gtk } from "astal/gtk3"
-import { Variable, bind } from "astal"
+import { App, Astal, Gdk } from "astal/gtk3"
+import { bind } from "astal"
 import Niri, { OutputsWithWorkspacesWithWindows, Window, WorkspaceWithWindows } from "../services/niri"
 
 const niri = Niri.get_default()
@@ -60,10 +60,9 @@ function Workspace(workspace: WorkspaceWithWindows, showInactiveIcons: boolean) 
         traits.push('populated')
     }
 
-    const className = traits.join(' ')
     const showIcons = (workspace.is_active || showInactiveIcons) && workspace.windows.length > 0
-    return <button onClick={() => niri.focusWorkspaceId(workspace.id)} className={workspace.is_active? "WorkspaceBtnActive": "WorkspaceBtnInactive"}>
-        {showIcons && workspace.windows.filter(win => win.id == workspace.active_window_id).map((win: any) => <icon className="WorkspaceIcon" icon={guessAppIcon(win)}  />)}
+    return <button onClick={() => niri.focusWorkspaceId(workspace.id)} className={workspace.is_active? "workspace-active-button": "workspace-inactive-button"}>
+        {showIcons && workspace.windows.filter(win => win.id == workspace.active_window_id).map((win: any) => <icon className="workspace-button-icon" icon={guessAppIcon(win)}  />)}
     </button>
 }
 
@@ -105,7 +104,7 @@ export default function Workspaces({ forMonitor, showInactiveIcons = false }: Wo
     const workspacesForMe = outputs.as(os => filterWorkspacesForMonitor(os, monitorName))
     /* const workspacesForMe = Variable.derive([outputs, monitorMake], filterWorkspacesForMonitor) */
 
-    return <box orientation={1} className="Workspaces">
+    return <box orientation={1} className="workspaces">
         {workspacesForMe.as(ws => ws.map(w => Workspace(w, showInactiveIcons)))}
     </box>
 }

@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="sssidebar" pattern="(file[sssidebar]:services//*||file[sssidebar]:utils//*||file[sssidebar]:widget//*)&amp;&amp;!file[sssidebar]:.idea/*&amp;&amp;!file[sssidebar]:.idea//*||file:.gitignore||file:app.ts||file:env.d.ts||file:package.json||file:style.scss||file:tsconfig.json&amp;&amp;!file:@girs//*" />
+</component>
