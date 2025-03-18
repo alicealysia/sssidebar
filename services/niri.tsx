@@ -1,10 +1,9 @@
 
 // Source + Credits for this file go to: https://github.com/maxverbeek/astalconfig/blob/master/service/niri.ts
 
-import GObject, { property, register } from "astal/gobject";
+import GObject, {property, register} from "astal/gobject";
 import GLib from "gi://GLib?version=2.0";
 import Gio from "gi://Gio?version=2.0";
-import {Variable} from "astal";
 
 export type Workspace = {
     id: number,
@@ -129,9 +128,7 @@ export default class Niri extends GObject.Object {
 
     public newConnection(): Gio.SocketConnection {
         const path = GLib.getenv('NIRI_SOCKET')!
-        const client = new Gio.SocketClient().connect(new Gio.UnixSocketAddress({ path }), null)
-
-        return client
+        return new Gio.SocketClient().connect(new Gio.UnixSocketAddress({path}), null)
     }
 
     public oneOffCommand(jsonEncodedCommand: string): string {
@@ -208,7 +205,7 @@ export default class Niri extends GObject.Object {
 
     public reconcileState(message: any) {
         if ('WorkspacesChanged' in message) {
-            // what is typesafety?
+            // what is typesafe?
             this.reconcileWorkspacesChanged(message.WorkspacesChanged.workspaces)
         }
 
