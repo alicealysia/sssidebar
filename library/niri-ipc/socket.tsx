@@ -1,4 +1,4 @@
-import {IPCRequest, Reply, Res as LibResponse} from "./lib";
+import {IPCRequest, Reply, IPCResponse as LibResponse} from "./lib";
 import {Gio, GLib} from "astal"
 /// Name of the environment variable containing the niri IPC socket path.
 export const SOCKET_PATH_ENV: string = "NIRI_SOCKET";

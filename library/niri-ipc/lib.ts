@@ -1,221 +1,240 @@
-//
-// Enum Request and related types
-//
-export type ERequestType =
-    | "Version"
-    | "Outputs"
-    | "Workspaces"
-    | "Windows"
-    | "Layers"
-    | "KeyboardLayouts"
-    | "FocusedOutput"
-    | "FocusedWindow"
-    | "PickWindow"
-    | "EventStream"
-    | "ReturnError"
-
-/// Class implementation
-export declare class IPCRequest {
-    type: ERequestType | "Action" | "Output";
-    action?: Action | OutputAction;
-    output?: string;
-    public constructor (type: ERequestType);
-    public constructor (type: "Action", action: Action);
-    public constructor (type: "Output", action: OutputAction, output: string);
+enum eIPCRequestType {
+    Version = "Version",
+    Outputs = "Outputs",
+    Workspaces = "Workspaces",
+    Windows = "Windows",
+    Layers = "Layers",
+    KeyboardLayouts = "KeyboardLayouts",
+    FocusedOutput = "FocusedOutput",
+    FocusedWindow = "FocusedWindow",
+    PickWindow = "PickWindow",
+    EventStream = "EventStream",
+    ReturnError = "ReturnError",
+    Action = "Action",
+    Output = "Output"
 }
 
-class IPCRequestSimple extends IPCRequest {
-    type: ERequestType;
-    public constructor (type: ERequestType) {
-        super(type);
-        this.type = type;
-    }
+enum eActionType {
+    Quit = "Quit",
+    PowerOffMonitors = "PowerOffMonitors",
+    PowerOnMonitors = "PowerOnMonitors",
+    Spawn = "Spawn",
+    DoScreenTransition = "DoScreenTransition",
+    Screenshot = "Screenshot",
+    ScreenshotScreen = "ScreenshotScreen",
+    ScreenshotWindow = "ScreenshotWindow",
+    FocusWindowInColumn = "FocusWindowInColumn",
+    FocusWindowPrevious = "FocusWindowPrevious",
+    FocusColumnLeft = "FocusColumnLeft",
+    FocusColumnRight = "FocusColumnRight",
+    FocusColumnFirst = "FocusColumnFirst",
+    FocusColumnLast = "FocusColumnLast",
+    FocusColumnRightOrFirst = "FocusColumnRightOrFirst",
+    FocusColumnLeftOrLast = "FocusColumnLeftOrLast",
+    FocusColumn = "FocusColumn",
+    FocusWindowOrMonitorUp = "FocusWindowOrMonitorUp",
+    FocusWindowOrMonitorDown = "FocusWindowOrMonitorDown",
+    FocusColumnOrMonitorLeft = "FocusColumnOrMonitorLeft",
+    FocusColumnOrMonitorRight = "FocusColumnOrMonitorRight",
+    FocusWindowDown = "FocusWindowDown",
+    FocusWindowUp = "FocusWindowUp",
+    FocusWindowDownOrColumnLeft = "FocusWindowDownOrColumnLeft",
+    FocusWindowDownOrColumnRight = "FocusWindowDownOrColumnRight",
+    FocusWindowUpOrColumnLeft = "FocusWindowUpOrColumnLeft",
+    FocusWindowUpOrColumnRight = "FocusWindowUpOrColumnRight",
+    FocusWindowOrWorkspaceDown = "FocusWindowOrWorkspaceDown",
+    FocusWindowOrWorkspaceUp = "FocusWindowOrWorkspaceUp",
+    FocusWindowTop = "FocusWindowTop",
+    FocusWindowBottom = "FocusWindowBottom",
+    FocusWindowDownOrTop = "FocusWindowDownOrTop",
+    FocusWindowUpOrBottom = "FocusWindowUpOrBottom",
+    MoveColumnLeft = "MoveColumnLeft",
+    MoveColumnRight = "MoveColumnRight",
+    MoveColumnToFirst = "MoveColumnToFirst",
+    MoveColumnToLast = "MoveColumnToLast",
+    MoveColumnLeftOrToMonitorLeft = "MoveColumnLeftOrToMonitorLeft",
+    MoveColumnRightOrToMonitorRight = "MoveColumnRightOrToMonitorRight",
+    MoveColumnToIndex = "MoveColumnToIndex",
+    MoveWindowDown = "MoveWindowDown",
+    MoveWindowUp = "MoveWindowUp",
+    MoveWindowDownOrToWorkspaceDown = "MoveWindowDownOrToWorkspaceDown",
+    MoveWindowUpOrToWorkspaceUp = "MoveWindowUpOrToWorkspaceUp",
+    ConsumeWindowIntoColumn = "ConsumeWindowIntoColumn",
+    ExpelWindowFromColumn = "ExpelWindowFromColumn",
+    SwapWindowRight = "SwapWindowRight",
+    SwapWindowLeft = "SwapWindowLeft",
+    ToggleColumnTabbedDisplay = "ToggleColumnTabbedDisplay",
+    SetColumnDisplay = "SetColumnDisplay",
+    CenterColumn = "CenterColumn",
+    FocusWorkspaceDown = "FocusWorkspaceDown",
+    FocusWorkspaceUp = "FocusWorkspaceUp",
+    FocusWorkspace = "FocusWorkspace",
+    FocusWorkspacePrevious = "FocusWorkspacePrevious",
+    MoveWindowToWorkspaceDown = "MoveWindowToWorkspaceDown",
+    MoveWindowToWorkspaceUp = "MoveWindowToWorkspaceUp",
+    MoveWindowToWorkspace = "MoveWindowToWorkspace",
+    MoveColumnToWorkspaceDown = "MoveColumnToWorkspaceDown",
+    MoveColumnToWorkspaceUp = "MoveColumnToWorkspaceUp",
+    MoveColumnToWorkspace = "MoveColumnToWorkspace",
+    MoveWorkspaceDown = "MoveWorkspaceDown",
+    MoveWorkspaceUp = "MoveWorkspaceUp",
+    MoveWorkspaceToIndex = "MoveWorkspaceToIndex",
+    SetWorkspaceName = "SetWorkspaceName",
+    UnsetWorkspaceName = "UnsetWorkspaceName",
+    FocusMonitorLeft = "FocusMonitorLeft",
+    FocusMonitorRight = "FocusMonitorRight",
+    FocusMonitorDown = "FocusMonitorDown",
+    FocusMonitorUp = "FocusMonitorUp",
+    FocusMonitorPrevious = "FocusMonitorPrevious",
+    FocusMonitorNext = "FocusMonitorNext",
+    FocusMonitor = "FocusMonitor",
+    MoveWindowToMonitorLeft = "MoveWindowToMonitorLeft",
+    MoveWindowToMonitorRight = "MoveWindowToMonitorRight",
+    MoveWindowToMonitorDown = "MoveWindowToMonitorDown",
+    MoveWindowToMonitorUp = "MoveWindowToMonitorUp",
+    MoveWindowToMonitorPrevious = "MoveWindowToMonitorPrevious",
+    MoveWindowToMonitorNext = "MoveWindowToMonitorNext",
+    MoveWindowToMonitor = "MoveWindowToMonitor",
+    MoveColumnToMonitorLeft = "MoveColumnToMonitorLeft",
+    MoveColumnToMonitorRight = "MoveColumnToMonitorRight",
+    MoveColumnToMonitorDown = "MoveColumnToMonitorDown",
+    MoveColumnToMonitorUp = "MoveColumnToMonitorUp",
+    MoveColumnToMonitorPrevious = "MoveColumnToMonitorPrevious",
+    MoveColumnToMonitorNext = "MoveColumnToMonitorNext",
+    MoveColumnToMonitor = "MoveColumnToMonitor",
+    SetWindowWidth = "SetWindowWidth",
+    SetWindowHeight = "SetWindowHeight",
+    SwitchPresetColumnWidth = "SwitchPresetColumnWidth",
+    MaximizeColumn = "MaximizeColumn",
+    SetColumnWidth = "SetColumnWidth",
+    ExpandColumnToAvailableWidth = "ExpandColumnToAvailableWidth",
+    SwitchLayout = "SwitchLayout",
+    ShowHotkeyOverlay = "ShowHotkeyOverlay",
+    MoveWorkspaceToMonitorLeft = "MoveWorkspaceToMonitorLeft",
+    MoveWorkspaceToMonitorRight = "MoveWorkspaceToMonitorRight",
+    MoveWorkspaceToMonitorDown = "MoveWorkspaceToMonitorDown",
+    MoveWorkspaceToMonitorUp = "MoveWorkspaceToMonitorUp",
+    MoveWorkspaceToMonitorPrevious = "MoveWorkspaceToMonitorPrevious",
+    MoveWorkspaceToMonitorNext = "MoveWorkspaceToMonitorNext",
+    MoveWorkspaceToMonitor = "MoveWorkspaceToMonitor",
+    ToggleDebugTin = "ToggleDebugTint",
+    DebugToggleOpaqueRegion = "DebugToggleOpaqueRegions",
+    DebugToggleDamage = "DebugToggleDamage",
+    FocusFloating = "FocusFloating",
+    FocusTiling = "FocusTiling",
+    SwitchFocusBetweenFloatingAndTiling = "SwitchFocusBetweenFloatingAndTiling",
+    MoveFloatingWindow = "MoveFloatingWindow",
+    SetDynamicCastMonitor = "SetDynamicCastMonitor",
+    ClearDynamicCastTarget = "ClearDynamicCastTarget"
 }
 
-class IPCRequestAction extends IPCRequest {
-    type: "Action";
-    action: Action;
-    public constructor (type: "Action", action: Action) {
-        super(type, action);
-        this.type = type;
-        this.action = action;
-    }
+enum eActionTypeId {
+    CloseWindow = "CloseWindow",
+    FullscreenWindow = "FullscreenWindow",
+    FocusWindow = "FocusWindow",
+    ConsumeOrExpelWindowLeft = "ConsumeOrExpelWindowLeft",
+    ConsumeOrExpelWindowRight = "ConsumeOrExpelWindowRight",
+    CenterWindow = "CenterWindow",
+    ResetWindowHeight = "ResetWindowHeight",
+    SwitchPresetWindowWidth = "SwitchPresetWindowWidth",
+    SwitchPresetWindowHeight = "SwitchPresetWindowHeight",
+    ToggleWindowFloating = "ToggleWindowFloating",
+    MoveWindowToFloating = "MoveWindowToFloating",
+    MoveWindowToTiling = "MoveWindowToTiling",
+    ToggleWindowRuleOpacity = "ToggleWindowRuleOpacity",
+    SetDynamicCastWindow = "SetDynamicCastWindow",
 }
 
-class IPCRequestOutputAction extends IPCRequest {
-    type: "Output";
-    output: string;
-    action: OutputAction;
-    public constructor (type: "Output", action: OutputAction, output: string) {
-        super(type, action, output);
-        this.type = type;
-        this.action = action;
-        this.output = output;
-    }
-}
-
-export function createIPCRequest (type: ERequestType): IPCRequestSimple;
-export function createIPCRequest (type: "Action", action: Action): IPCRequestAction;
-export function createIPCRequest (type: "Output", action: OutputAction, output: string): IPCRequestOutputAction;
-export function createIPCRequest (type: ERequestType | "Action" | "Output", action?: Action | OutputAction, output?: string) : IPCRequest {
-    switch (type){
-        case "Action"   : return new IPCRequestAction("Action", action as Action);
-        case "Output"   : return new IPCRequestOutputAction("Output", action as OutputAction, output as string);
-        default         : return new IPCRequestSimple(type);
-    }
-}
-
-
-//
-// The Result type and Reply alias
-//
-export type Reply = Promise<Res>;
-
-//
-// Enum Response
-//
-export type Res =
-    | { type: "Handled" }
-    | { type: "Version"; version: string }
-    | { type: "Outputs"; outputs: { [key: string]: Output } }
-    | { type: "Workspaces"; workspaces: Workspace[] }
-    | { type: "Windows"; windows: Window[] }
-    | { type: "Layers"; layers: LayerSurface[] }
-    | { type: "KeyboardLayouts"; keyboardLayouts: KeyboardLayouts }
-    | { type: "FocusedOutput"; focusedOutput: Output | null }
-    | { type: "FocusedWindow"; focusedWindow: Window | null }
-    | { type: "PickedWindow"; pickedWindow: Window | null }
-    | { type: "OutputConfigChanged"; outputConfigChanged: OutputConfigChanged };
-
-//
-// Enum Action
-//
-export type Action =
+export type tAction =
+    | { type: "ScreenshotWindow"; id: number | null; write_to_disk: boolean }
+    | { type: "SetWindowWidth"; id: number | null; change: SizeChange }
+    | { type: "SetWindowHeight"; id: number | null; change: SizeChange }
+    | { type: "MoveWindowToMonitor"; id: number | null; output: string }
+    | { type: "MoveFloatingWindow"; id: number | null; x: PositionChange; y: PositionChange }
     | { type: "Quit"; skip_confirmation: boolean }
-    | { type: "PowerOffMonitors" }
-    | { type: "PowerOnMonitors" }
     | { type: "Spawn"; command: string[] }
     | { type: "DoScreenTransition"; delay_ms: number | null }
     | { type: "Screenshot"; show_pointer: boolean }
     | { type: "ScreenshotScreen"; write_to_disk: boolean; show_pointer: boolean }
-    | { type: "ScreenshotWindow"; id: number | null; write_to_disk: boolean }
-    | { type: "CloseWindow"; id: number | null }
-    | { type: "FullscreenWindow"; id: number | null }
-    | { type: "FocusWindow"; id: number }
     | { type: "FocusWindowInColumn"; index: number }
-    | { type: "FocusWindowPrevious" }
-    | { type: "FocusColumnLeft" }
-    | { type: "FocusColumnRight" }
-    | { type: "FocusColumnFirst" }
-    | { type: "FocusColumnLast" }
-    | { type: "FocusColumnRightOrFirst" }
-    | { type: "FocusColumnLeftOrLast" }
     | { type: "FocusColumn"; index: number }
-    | { type: "FocusWindowOrMonitorUp" }
-    | { type: "FocusWindowOrMonitorDown" }
-    | { type: "FocusColumnOrMonitorLeft" }
-    | { type: "FocusColumnOrMonitorRight" }
-    | { type: "FocusWindowDown" }
-    | { type: "FocusWindowUp" }
-    | { type: "FocusWindowDownOrColumnLeft" }
-    | { type: "FocusWindowDownOrColumnRight" }
-    | { type: "FocusWindowUpOrColumnLeft" }
-    | { type: "FocusWindowUpOrColumnRight" }
-    | { type: "FocusWindowOrWorkspaceDown" }
-    | { type: "FocusWindowOrWorkspaceUp" }
-    | { type: "FocusWindowTop" }
-    | { type: "FocusWindowBottom" }
-    | { type: "FocusWindowDownOrTop" }
-    | { type: "FocusWindowUpOrBottom" }
-    | { type: "MoveColumnLeft" }
-    | { type: "MoveColumnRight" }
-    | { type: "MoveColumnToFirst" }
-    | { type: "MoveColumnToLast" }
-    | { type: "MoveColumnLeftOrToMonitorLeft" }
-    | { type: "MoveColumnRightOrToMonitorRight" }
     | { type: "MoveColumnToIndex"; index: number }
-    | { type: "MoveWindowDown" }
-    | { type: "MoveWindowUp" }
-    | { type: "MoveWindowDownOrToWorkspaceDown" }
-    | { type: "MoveWindowUpOrToWorkspaceUp" }
-    | { type: "ConsumeOrExpelWindowLeft"; id: number | null }
-    | { type: "ConsumeOrExpelWindowRight"; id: number | null }
-    | { type: "ConsumeWindowIntoColumn" }
-    | { type: "ExpelWindowFromColumn" }
-    | { type: "SwapWindowRight" }
-    | { type: "SwapWindowLeft" }
-    | { type: "ToggleColumnTabbedDisplay" }
     | { type: "SetColumnDisplay"; display: ColumnDisplay }
-    | { type: "CenterColumn" }
-    | { type: "CenterWindow"; id: number | null }
-    | { type: "FocusWorkspaceDown" }
-    | { type: "FocusWorkspaceUp" }
     | { type: "FocusWorkspace"; reference: WorkspaceReferenceArg }
-    | { type: "FocusWorkspacePrevious" }
-    | { type: "MoveWindowToWorkspaceDown" }
-    | { type: "MoveWindowToWorkspaceUp" }
     | { type: "MoveWindowToWorkspace"; window_id: number | null; reference: WorkspaceReferenceArg }
-    | { type: "MoveColumnToWorkspaceDown" }
-    | { type: "MoveColumnToWorkspaceUp" }
     | { type: "MoveColumnToWorkspace"; reference: WorkspaceReferenceArg }
-    | { type: "MoveWorkspaceDown" }
-    | { type: "MoveWorkspaceUp" }
     | { type: "MoveWorkspaceToIndex"; index: number; reference: WorkspaceReferenceArg | null }
     | { type: "SetWorkspaceName"; name: string; workspace: WorkspaceReferenceArg | null }
     | { type: "UnsetWorkspaceName"; reference: WorkspaceReferenceArg | null }
-    | { type: "FocusMonitorLeft" }
-    | { type: "FocusMonitorRight" }
-    | { type: "FocusMonitorDown" }
-    | { type: "FocusMonitorUp" }
-    | { type: "FocusMonitorPrevious" }
-    | { type: "FocusMonitorNext" }
     | { type: "FocusMonitor"; output: string }
-    | { type: "MoveWindowToMonitorLeft" }
-    | { type: "MoveWindowToMonitorRight" }
-    | { type: "MoveWindowToMonitorDown" }
-    | { type: "MoveWindowToMonitorUp" }
-    | { type: "MoveWindowToMonitorPrevious" }
-    | { type: "MoveWindowToMonitorNext" }
-    | { type: "MoveWindowToMonitor"; id: number | null; output: string }
-    | { type: "MoveColumnToMonitorLeft" }
-    | { type: "MoveColumnToMonitorRight" }
-    | { type: "MoveColumnToMonitorDown" }
-    | { type: "MoveColumnToMonitorUp" }
-    | { type: "MoveColumnToMonitorPrevious" }
-    | { type: "MoveColumnToMonitorNext" }
     | { type: "MoveColumnToMonitor"; output: string }
-    | { type: "SetWindowWidth"; id: number | null; change: SizeChange }
-    | { type: "SetWindowHeight"; id: number | null; change: SizeChange }
-    | { type: "ResetWindowHeight"; id: number | null }
-    | { type: "SwitchPresetColumnWidth" }
-    | { type: "SwitchPresetWindowWidth"; id: number | null }
-    | { type: "SwitchPresetWindowHeight"; id: number | null }
-    | { type: "MaximizeColumn" }
     | { type: "SetColumnWidth"; change: SizeChange }
-    | { type: "ExpandColumnToAvailableWidth" }
     | { type: "SwitchLayout"; layout: LayoutSwitchTarget }
-    | { type: "ShowHotkeyOverlay" }
-    | { type: "MoveWorkspaceToMonitorLeft" }
-    | { type: "MoveWorkspaceToMonitorRight" }
-    | { type: "MoveWorkspaceToMonitorDown" }
-    | { type: "MoveWorkspaceToMonitorUp" }
-    | { type: "MoveWorkspaceToMonitorPrevious" }
-    | { type: "MoveWorkspaceToMonitorNext" }
     | { type: "MoveWorkspaceToMonitor"; output: string; reference: WorkspaceReferenceArg | null }
-    | { type: "ToggleDebugTint" }
-    | { type: "DebugToggleOpaqueRegions" }
-    | { type: "DebugToggleDamage" }
-    | { type: "ToggleWindowFloating"; id: number | null }
-    | { type: "MoveWindowToFloating"; id: number | null }
-    | { type: "MoveWindowToTiling"; id: number | null }
-    | { type: "FocusFloating" }
-    | { type: "FocusTiling" }
-    | { type: "SwitchFocusBetweenFloatingAndTiling" }
-    | { type: "MoveFloatingWindow"; id: number | null; x: PositionChange; y: PositionChange }
-    | { type: "ToggleWindowRuleOpacity"; id: number | null }
-    | { type: "SetDynamicCastWindow"; id: number | null }
     | { type: "SetDynamicCastMonitor"; output: string | null }
-    | { type: "ClearDynamicCastTarget" };
+
+interface IPCRequest {
+    type: eIPCRequestType;
+    action?: tAction;
+    output?: string;
+}
+
+const createIPCRequest = (type: eIPCRequestType) => {
+    if (type === eIPCRequestType.Action) {
+        return IPCRequestAction;
+    }
+    
+    return { type } as IPCRequest
+}
+
+const IPCRequestAction = {
+    setAction: (action: eActionType) => {
+        const act:tAction = {
+            
+        };
+    }
+}
+
+const IPCRequestOutputAction = {
+    setOutput: () => {}
+}
+
+class OutputAction {
+    
+}
+
+//
+// The Result type and Reply alias
+//
+export type Reply = Promise<IPCResponse>;
+
+interface IHandledResponse { type: "Handled" }
+interface IVersionResponse { type: "Version"; version: string }
+interface IOutputsResponse { type: "Outputs"; outputs: { [key: string]: Output } }
+interface IWorkspacesResponse { type: "Workspaces"; workspaces: Workspace[] }
+interface IWindowsResponse { type: "Windows"; windows: Window[] }
+interface ILayersResponse { type: "Layers"; layers: LayerSurface[] }
+interface IKeyboardLayoutsResponse { type: "KeyboardLayouts"; keyboardLayouts: KeyboardLayouts }
+interface IFocusedOutputResponse { type: "FocusedOutput"; focusedOutput: Output | null }
+interface IFocusedWindowResponse { type: "FocusedWindow"; focusedWindow: Window | null }
+interface IPickedWindowResponse { type: "PickedWindow"; pickedWindow: Window | null }
+interface IOutputConfigChangedResponse { type: "OutputConfigChanged"; outputConfigChanged: OutputConfigChanged }
+//
+// Enum Response
+//
+export type IPCResponse = 
+    IHandledResponse
+    | IVersionResponse
+    | IOutputsResponse
+    | IWorkspacesResponse
+    | IWindowsResponse
+    | ILayersResponse
+    | IKeyboardLayoutsResponse
+    | IFocusedOutputResponse
+    | IFocusedWindowResponse
+    | IPickedWindowResponse
+    | IOutputConfigChangedResponse
+
 
 //
 // Enum SizeChange
@@ -260,7 +279,7 @@ export enum ColumnDisplay {
 //
 // Enum OutputAction
 //
-export type OutputAction =
+export type tOutputAction =
     | { type: "Off" }
     | { type: "On" }
     | { type: "Mode"; mode: ModeToSet }
