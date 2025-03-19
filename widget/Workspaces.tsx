@@ -2,7 +2,7 @@
 
 import { App, Astal, Gdk } from "astal/gtk3"
 import { bind } from "astal"
-import Niri, { OutputsWithWorkspacesWithWindows, Window, WorkspaceWithWindows } from "../services/niri"
+import Niri, { OutputsWithWorkspacesWithWindows, Window, WorkspaceWithWindows } from "../library/niri"
 
 const niri = Niri.get_default()
 
