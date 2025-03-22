@@ -1,649 +1,800 @@
-enum eIPCRequestType {
-    Version = "Version",
-    Outputs = "Outputs",
-    Workspaces = "Workspaces",
-    Windows = "Windows",
-    Layers = "Layers",
-    KeyboardLayouts = "KeyboardLayouts",
-    FocusedOutput = "FocusedOutput",
-    FocusedWindow = "FocusedWindow",
-    PickWindow = "PickWindow",
-    EventStream = "EventStream",
-    ReturnError = "ReturnError",
-    Action = "Action",
-    Output = "Output"
+export namespace IPCRequest {
+    export class Version {}
+    export class Outputs {}
+    export class Workspaces {}
+    export class Windows {}
+    export class Layers {}
+    export class KeyboardLayouts {}
+    export class FocusedOutput {}
+    export class FocusedWindow {}
+    export class PickWindow {}
+    export class Action {
+        action: Action
+        constructor (action: Action) {
+            this.action = action;
+        }
+    }
+    export class Output { 
+        output: string;
+        action: OutputAction;
+        constructor(output: string, action: OutputAction) {
+            this.output = output;
+            this.action = action;
+        }
+    }
+    export class EventStream {}
+    export class ReturnError {}
 }
 
-enum eActionType {
-    Quit = "Quit",
-    PowerOffMonitors = "PowerOffMonitors",
-    PowerOnMonitors = "PowerOnMonitors",
-    Spawn = "Spawn",
-    DoScreenTransition = "DoScreenTransition",
-    Screenshot = "Screenshot",
-    ScreenshotScreen = "ScreenshotScreen",
-    ScreenshotWindow = "ScreenshotWindow",
-    FocusWindowInColumn = "FocusWindowInColumn",
-    FocusWindowPrevious = "FocusWindowPrevious",
-    FocusColumnLeft = "FocusColumnLeft",
-    FocusColumnRight = "FocusColumnRight",
-    FocusColumnFirst = "FocusColumnFirst",
-    FocusColumnLast = "FocusColumnLast",
-    FocusColumnRightOrFirst = "FocusColumnRightOrFirst",
-    FocusColumnLeftOrLast = "FocusColumnLeftOrLast",
-    FocusColumn = "FocusColumn",
-    FocusWindowOrMonitorUp = "FocusWindowOrMonitorUp",
-    FocusWindowOrMonitorDown = "FocusWindowOrMonitorDown",
-    FocusColumnOrMonitorLeft = "FocusColumnOrMonitorLeft",
-    FocusColumnOrMonitorRight = "FocusColumnOrMonitorRight",
-    FocusWindowDown = "FocusWindowDown",
-    FocusWindowUp = "FocusWindowUp",
-    FocusWindowDownOrColumnLeft = "FocusWindowDownOrColumnLeft",
-    FocusWindowDownOrColumnRight = "FocusWindowDownOrColumnRight",
-    FocusWindowUpOrColumnLeft = "FocusWindowUpOrColumnLeft",
-    FocusWindowUpOrColumnRight = "FocusWindowUpOrColumnRight",
-    FocusWindowOrWorkspaceDown = "FocusWindowOrWorkspaceDown",
-    FocusWindowOrWorkspaceUp = "FocusWindowOrWorkspaceUp",
-    FocusWindowTop = "FocusWindowTop",
-    FocusWindowBottom = "FocusWindowBottom",
-    FocusWindowDownOrTop = "FocusWindowDownOrTop",
-    FocusWindowUpOrBottom = "FocusWindowUpOrBottom",
-    MoveColumnLeft = "MoveColumnLeft",
-    MoveColumnRight = "MoveColumnRight",
-    MoveColumnToFirst = "MoveColumnToFirst",
-    MoveColumnToLast = "MoveColumnToLast",
-    MoveColumnLeftOrToMonitorLeft = "MoveColumnLeftOrToMonitorLeft",
-    MoveColumnRightOrToMonitorRight = "MoveColumnRightOrToMonitorRight",
-    MoveColumnToIndex = "MoveColumnToIndex",
-    MoveWindowDown = "MoveWindowDown",
-    MoveWindowUp = "MoveWindowUp",
-    MoveWindowDownOrToWorkspaceDown = "MoveWindowDownOrToWorkspaceDown",
-    MoveWindowUpOrToWorkspaceUp = "MoveWindowUpOrToWorkspaceUp",
-    ConsumeWindowIntoColumn = "ConsumeWindowIntoColumn",
-    ExpelWindowFromColumn = "ExpelWindowFromColumn",
-    SwapWindowRight = "SwapWindowRight",
-    SwapWindowLeft = "SwapWindowLeft",
-    ToggleColumnTabbedDisplay = "ToggleColumnTabbedDisplay",
-    SetColumnDisplay = "SetColumnDisplay",
-    CenterColumn = "CenterColumn",
-    FocusWorkspaceDown = "FocusWorkspaceDown",
-    FocusWorkspaceUp = "FocusWorkspaceUp",
-    FocusWorkspace = "FocusWorkspace",
-    FocusWorkspacePrevious = "FocusWorkspacePrevious",
-    MoveWindowToWorkspaceDown = "MoveWindowToWorkspaceDown",
-    MoveWindowToWorkspaceUp = "MoveWindowToWorkspaceUp",
-    MoveWindowToWorkspace = "MoveWindowToWorkspace",
-    MoveColumnToWorkspaceDown = "MoveColumnToWorkspaceDown",
-    MoveColumnToWorkspaceUp = "MoveColumnToWorkspaceUp",
-    MoveColumnToWorkspace = "MoveColumnToWorkspace",
-    MoveWorkspaceDown = "MoveWorkspaceDown",
-    MoveWorkspaceUp = "MoveWorkspaceUp",
-    MoveWorkspaceToIndex = "MoveWorkspaceToIndex",
-    SetWorkspaceName = "SetWorkspaceName",
-    UnsetWorkspaceName = "UnsetWorkspaceName",
-    FocusMonitorLeft = "FocusMonitorLeft",
-    FocusMonitorRight = "FocusMonitorRight",
-    FocusMonitorDown = "FocusMonitorDown",
-    FocusMonitorUp = "FocusMonitorUp",
-    FocusMonitorPrevious = "FocusMonitorPrevious",
-    FocusMonitorNext = "FocusMonitorNext",
-    FocusMonitor = "FocusMonitor",
-    MoveWindowToMonitorLeft = "MoveWindowToMonitorLeft",
-    MoveWindowToMonitorRight = "MoveWindowToMonitorRight",
-    MoveWindowToMonitorDown = "MoveWindowToMonitorDown",
-    MoveWindowToMonitorUp = "MoveWindowToMonitorUp",
-    MoveWindowToMonitorPrevious = "MoveWindowToMonitorPrevious",
-    MoveWindowToMonitorNext = "MoveWindowToMonitorNext",
-    MoveWindowToMonitor = "MoveWindowToMonitor",
-    MoveColumnToMonitorLeft = "MoveColumnToMonitorLeft",
-    MoveColumnToMonitorRight = "MoveColumnToMonitorRight",
-    MoveColumnToMonitorDown = "MoveColumnToMonitorDown",
-    MoveColumnToMonitorUp = "MoveColumnToMonitorUp",
-    MoveColumnToMonitorPrevious = "MoveColumnToMonitorPrevious",
-    MoveColumnToMonitorNext = "MoveColumnToMonitorNext",
-    MoveColumnToMonitor = "MoveColumnToMonitor",
-    SetWindowWidth = "SetWindowWidth",
-    SetWindowHeight = "SetWindowHeight",
-    SwitchPresetColumnWidth = "SwitchPresetColumnWidth",
-    MaximizeColumn = "MaximizeColumn",
-    SetColumnWidth = "SetColumnWidth",
-    ExpandColumnToAvailableWidth = "ExpandColumnToAvailableWidth",
-    SwitchLayout = "SwitchLayout",
-    ShowHotkeyOverlay = "ShowHotkeyOverlay",
-    MoveWorkspaceToMonitorLeft = "MoveWorkspaceToMonitorLeft",
-    MoveWorkspaceToMonitorRight = "MoveWorkspaceToMonitorRight",
-    MoveWorkspaceToMonitorDown = "MoveWorkspaceToMonitorDown",
-    MoveWorkspaceToMonitorUp = "MoveWorkspaceToMonitorUp",
-    MoveWorkspaceToMonitorPrevious = "MoveWorkspaceToMonitorPrevious",
-    MoveWorkspaceToMonitorNext = "MoveWorkspaceToMonitorNext",
-    MoveWorkspaceToMonitor = "MoveWorkspaceToMonitor",
-    ToggleDebugTin = "ToggleDebugTint",
-    DebugToggleOpaqueRegion = "DebugToggleOpaqueRegions",
-    DebugToggleDamage = "DebugToggleDamage",
-    FocusFloating = "FocusFloating",
-    FocusTiling = "FocusTiling",
-    SwitchFocusBetweenFloatingAndTiling = "SwitchFocusBetweenFloatingAndTiling",
-    MoveFloatingWindow = "MoveFloatingWindow",
-    SetDynamicCastMonitor = "SetDynamicCastMonitor",
-    ClearDynamicCastTarget = "ClearDynamicCastTarget"
-}
 
-enum eActionTypeId {
-    CloseWindow = "CloseWindow",
-    FullscreenWindow = "FullscreenWindow",
-    FocusWindow = "FocusWindow",
-    ConsumeOrExpelWindowLeft = "ConsumeOrExpelWindowLeft",
-    ConsumeOrExpelWindowRight = "ConsumeOrExpelWindowRight",
-    CenterWindow = "CenterWindow",
-    ResetWindowHeight = "ResetWindowHeight",
-    SwitchPresetWindowWidth = "SwitchPresetWindowWidth",
-    SwitchPresetWindowHeight = "SwitchPresetWindowHeight",
-    ToggleWindowFloating = "ToggleWindowFloating",
-    MoveWindowToFloating = "MoveWindowToFloating",
-    MoveWindowToTiling = "MoveWindowToTiling",
-    ToggleWindowRuleOpacity = "ToggleWindowRuleOpacity",
-    SetDynamicCastWindow = "SetDynamicCastWindow",
-}
 
-export type tAction =
-    | { type: "ScreenshotWindow"; id: number | null; write_to_disk: boolean }
-    | { type: "SetWindowWidth"; id: number | null; change: SizeChange }
-    | { type: "SetWindowHeight"; id: number | null; change: SizeChange }
-    | { type: "MoveWindowToMonitor"; id: number | null; output: string }
-    | { type: "MoveFloatingWindow"; id: number | null; x: PositionChange; y: PositionChange }
-    | { type: "Quit"; skip_confirmation: boolean }
-    | { type: "Spawn"; command: string[] }
-    | { type: "DoScreenTransition"; delay_ms: number | null }
-    | { type: "Screenshot"; show_pointer: boolean }
-    | { type: "ScreenshotScreen"; write_to_disk: boolean; show_pointer: boolean }
-    | { type: "FocusWindowInColumn"; index: number }
-    | { type: "FocusColumn"; index: number }
-    | { type: "MoveColumnToIndex"; index: number }
-    | { type: "SetColumnDisplay"; display: ColumnDisplay }
-    | { type: "FocusWorkspace"; reference: WorkspaceReferenceArg }
-    | { type: "MoveWindowToWorkspace"; window_id: number | null; reference: WorkspaceReferenceArg }
-    | { type: "MoveColumnToWorkspace"; reference: WorkspaceReferenceArg }
-    | { type: "MoveWorkspaceToIndex"; index: number; reference: WorkspaceReferenceArg | null }
-    | { type: "SetWorkspaceName"; name: string; workspace: WorkspaceReferenceArg | null }
-    | { type: "UnsetWorkspaceName"; reference: WorkspaceReferenceArg | null }
-    | { type: "FocusMonitor"; output: string }
-    | { type: "MoveColumnToMonitor"; output: string }
-    | { type: "SetColumnWidth"; change: SizeChange }
-    | { type: "SwitchLayout"; layout: LayoutSwitchTarget }
-    | { type: "MoveWorkspaceToMonitor"; output: string; reference: WorkspaceReferenceArg | null }
-    | { type: "SetDynamicCastMonitor"; output: string | null }
+//placeholder
+type Output = {}
+type Workspace = {}
+type LayerSurface = {}
+type KeyboardLayouts = {}
+//type Reply = Result<Response, String;
 
-interface IPCRequest {
-    type: eIPCRequestType;
-    action?: tAction;
-    output?: string;
-}
+export type IPCResponse =
+    { Handled: {} }
+    | { Version: string }
+    | { Outputs: { [key: string]: Output } }
+    | { Workspaces: Workspace[] }
+    | { Windows: Window[] }
+    | { Layers: LayerSurface[] }
+    | { KeyboardLayouts: KeyboardLayouts }
+    | { FocusedOutput: Output }
+    | { FocusedWindow: Window }
+    | { PickedWindow: Window }
+    | { OutputConfigChanged: OutputConfigChanged }
 
-const createIPCRequest = (type: eIPCRequestType) => {
-    if (type === eIPCRequestType.Action) {
-        return IPCRequestAction;
+export namespace Action {
+    export class Quit {
+        skip_confirmation: boolean
+        constructor (skipConfirmation: boolean) {
+            this.skip_confirmation = skipConfirmation
+        }
+    }
+    export class PowerOffMonitors {}
+    export class PowerOnMonitors {}
+    export class Spawn {
+        command: string [];
+        constructor(command: string[]) {
+            this.command = command;
+        }
+    }
+    export class DoScreenTransition {
+        delay_ms: number
+        constructor (delay_ms: number) {
+            this.delay_ms = delay_ms;
+        }
+    }
+    export class Screenshot {
+        show_pointer: boolean
+        constructor(show_pointer: boolean) {
+            this.show_pointer = show_pointer;
+        }
+    }
+    export class ScreenshotScreen {
+        write_to_disk: boolean
+        show_pointer: boolean
+        constructor(show_pointer: boolean, write_to_disk: boolean) {
+            this.show_pointer = show_pointer;
+            this.write_to_disk = write_to_disk;
+        }
+    }
+    export class ScreenshotWindow {
+        id: number;
+        write_to_disk: boolean;
+        constructor (id: number, write_to_disk: boolean) {
+            this.id = id;
+            this.write_to_disk = write_to_disk;
+        }
     }
     
-    return { type } as IPCRequest
+    export class CloseWindow {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+
+    export class FullscreenWindow {
+        id: number;
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class ToggleWindowedFullscreen {
+        id: number;
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class FocusWindow {
+            id: number;
+            constructor(id: number) {
+                this.id = id;
+            }
+    }
+    export class FocusWindowInColumn {
+        index: number;
+        constructor(index: number) {
+            this.index = index;
+        }
+    }
+    export class FocusWindowPrevious {}
+    export class FocusColumnLeft {}
+    export class FocusColumnRight {}
+    export class FocusColumnFirst {}
+    export class FocusColumnLast {}
+    export class FocusColumnRightOrFirst {}
+    export class FocusColumnLeftOrLast {}
+    export class FocusColumn {
+        index: number
+        constructor(index: number) {
+            this.index = index;
+        }
+    }
+    export class FocusWindowOrMonitorUp {}
+    export class FocusWindowOrMonitorDown {}
+    export class FocusColumnOrMonitorLeft {}
+    export class FocusColumnOrMonitorRight {}
+    export class FocusWindowDown {}
+    export class FocusWindowUp {}
+    export class FocusWindowDownOrColumnLeft {}
+    export class FocusWindowDownOrColumnRight {}
+    export class FocusWindowUpOrColumnLeft {}
+    export class FocusWindowUpOrColumnRight {}
+    export class FocusWindowOrWorkspaceDown {}
+    export class FocusWindowOrWorkspaceUp {}
+    export class FocusWindowTop {}
+    export class FocusWindowBottom {}
+    export class FocusWindowDownOrTop {}
+    export class FocusWindowUpOrBottom {}
+    export class MoveColumnLeft {}
+    export class MoveColumnRight {}
+    export class MoveColumnToFirst {}
+    export class MoveColumnToLast {}
+    export class MoveColumnLeftOrToMonitorLeft {}
+    export class MoveColumnRightOrToMonitorRight {}
+    export class MoveColumnToIndex {
+        index: number
+        constructor(index: number) {
+            this.index = index;
+        }
+    }
+    export class MoveWindowDown {}
+    export class MoveWindowUp {}
+    export class MoveWindowDownOrToWorkspaceDown {}
+    export class MoveWindowUpOrToWorkspaceUp {}
+    export class ConsumeOrExpelWindowLeft {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class ConsumeOrExpelWindowRight {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class ConsumeWindowIntoColumn {}
+    export class ExpelWindowFromColumn {}
+    export class SwapWindowRight {}
+    export class SwapWindowLeft {}
+    export class ToggleColumnTabbedDisplay {}
+    export class SetColumnDisplay {
+        display: ColumnDisplay
+        constructor(display: ColumnDisplay) {
+            this.display = display
+        }
+    }
+    export class CenterColumn {}
+    export class CenterWindow {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class FocusWorkspaceDown {}
+    export class FocusWorkspaceUp {}
+    export class FocusWorkspace {
+        reference: WorkspaceReferenceArg
+        constructor(reference: WorkspaceReferenceArg) {
+            this.reference = reference;
+        }
+    }
+    export class FocusWorkspacePrevious {}
+    export class MoveWindowToWorkspaceDown {}
+    export class MoveWindowToWorkspaceUp {}
+    export class MoveWindowToWorkspace {
+        window_id: number
+        reference: WorkspaceReferenceArg
+        constructor(reference: WorkspaceReferenceArg, window_id: number) {
+            this.reference = reference;
+            this.window_id = window_id;
+        }
+    }
+    export class MoveColumnToWorkspaceDown {}
+    export class MoveColumnToWorkspaceUp {}
+    export class MoveColumnToWorkspace {
+        reference: WorkspaceReferenceArg
+        constructor(reference: WorkspaceReferenceArg) {
+            this.reference = reference;
+        }
+    }
+    export class MoveWorkspaceDown {}
+    export class MoveWorkspaceUp {}
+    export class MoveWorkspaceToIndex {
+        index: number
+        reference: WorkspaceReferenceArg
+        constructor(index: number, reference: WorkspaceReferenceArg) {
+            this.index = index;
+            this.reference = reference;
+        }
+    }
+    export class SetWorkspaceName {
+        name: string
+        workspace: WorkspaceReferenceArg
+        constructor(name: string, workspace: WorkspaceReferenceArg) {
+            this.name = name;
+            this.workspace = workspace;
+        }
+    }
+    export class UnsetWorkspaceName {
+        reference: WorkspaceReferenceArg
+        constructor(reference: WorkspaceReferenceArg) {
+            this.reference = reference;
+        }
+    }
+    export class FocusMonitorLeft {}
+    export class FocusMonitorRight {}
+    export class FocusMonitorDown {}
+    export class FocusMonitorUp {}
+    export class FocusMonitorPrevious {}
+    export class FocusMonitorNext {}
+    export class FocusMonitor {
+        output: String
+        constructor(output: string) {
+            this.output = output;
+        }
+    }
+    export class MoveWindowToMonitorLeft {}
+    export class MoveWindowToMonitorRight {}
+    export class MoveWindowToMonitorDown {}
+    export class MoveWindowToMonitorUp {}
+    export class MoveWindowToMonitorPrevious {}
+    export class MoveWindowToMonitorNext {}
+    export class MoveWindowToMonitor {
+        id: number
+        output: String
+        constructor(output: string, window_id: number) {
+            this.output = output;
+            this.id = window_id;
+        }
+    }
+    export class MoveColumnToMonitorLeft {}
+    export class MoveColumnToMonitorRight {}
+    export class MoveColumnToMonitorDown {}
+    export class MoveColumnToMonitorUp {}
+    export class MoveColumnToMonitorPrevious {}
+    export class MoveColumnToMonitorNext {}
+    export class MoveColumnToMonitor {
+            output: string;
+            constructor(output: string) {
+                this.output = output;
+            }
+    }
+    export class SetWindowWidth {
+        id: number
+        change: SizeChange
+        constructor(id: number, change: SizeChange) {
+            this.id = id;
+            this.change = change;
+        }
+    }
+    export class SetWindowHeight {
+        id: number
+        change: SizeChange
+        constructor(id: number, change: SizeChange) {
+            this.id = id;
+            this.change = change;
+        }
+    }
+    export class ResetWindowHeight {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class SwitchPresetColumnWidth {}
+    export class SwitchPresetWindowWidth {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class SwitchPresetWindowHeight {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class MaximizeColumn {}
+    export class SetColumnWidth {
+        change: SizeChange
+        constructor (change: SizeChange) {
+            this.change = change;
+        }
+    }
+    export class ExpandColumnToAvailableWidth {}
+    export class SwitchLayout {
+        layout: LayoutSwitchTarget
+        constructor(layout: LayoutSwitchTarget) {
+            this.layout = layout;
+        }
+    }
+    export class ShowHotkeyOverlay {}
+    export class MoveWorkspaceToMonitorLeft {}
+    export class MoveWorkspaceToMonitorRight {}
+    export class MoveWorkspaceToMonitorDown {}
+    export class MoveWorkspaceToMonitorUp {}
+    export class MoveWorkspaceToMonitorPrevious {}
+    export class MoveWorkspaceToMonitorNext {}
+    export class MoveWorkspaceToMonitor {
+        output: String
+        reference: WorkspaceReferenceArg
+        constructor(output: string, reference: WorkspaceReferenceArg) {
+            this.output = output;
+            this.reference = reference;
+        }
+    }
+    export class ToggleDebugTint {}
+    export class DebugToggleOpaqueRegions {}
+    export class DebugToggleDamage {}
+    export class ToggleWindowFloating {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class MoveWindowToFloating {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class MoveWindowToTiling {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class FocusFloating {}
+    export class FocusTiling {}
+    export class SwitchFocusBetweenFloatingAndTiling {}
+    export class MoveFloatingWindow {
+        id: number
+        x: PositionChange
+        y: PositionChange
+        constructor(id: number, x: PositionChange, y: PositionChange) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+        }
+    }
+    export class ToggleWindowRuleOpacity {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class SetDynamicCastWindow {
+        id: number
+        constructor(id: number) {
+            this.id = id;
+        }
+    }
+    export class SetDynamicCastMonitor {
+        output: String
+        constructor(output: string) {
+            this.output = output;
+        }
+    }
+    export class ClearDynamicCastTarget {}
+
 }
 
-const IPCRequestAction = {
-    setAction: (action: eActionType) => {
-        const act:tAction = {
-            
+
+
+pub enum SizeChange {
+        SetFixed(i32),
+        SetProportion(f64),
+        AdjustFixed(i32),
+        AdjustProportion(f64),
+}
+
+pub enum PositionChange {
+        SetFixed(f64),
+        AdjustFixed(f64),
+}
+
+pub enum WorkspaceReferenceArg {
+        Id(number),
+        Index(u8),
+        Name(String),
+}
+
+pub enum LayoutSwitchTarget {
+        Next,
+        Prev,
+        Index(u8),
+}
+
+pub enum ColumnDisplay {
+        Normal,
+        Tabbed,
+}
+
+pub enum OutputAction {
+        Off,
+        On,
+        Mode {
+                mode: ModeToSet,
+},
+Scale {
+        scale: ScaleToSet,
+},
+Transform {
+        transform: Transform,
+},
+Position {
+        position: PositionToSet,
+},
+Vrr {
+        vrr: VrrToSet,
+},
+}
+
+pub enum ModeToSet {
+        Automatic,
+        Specific(ConfiguredMode),
+}
+
+pub struct ConfiguredMode {
+        pub width: u16,
+                pub height: u16,
+                pub refresh: f64,
+}
+
+pub enum ScaleToSet {
+        Automatic,
+        Specific(f64),
+}
+
+pub enum PositionToSet {
+    Automatic,
+Specific(ConfiguredPosition),
+}
+
+pub struct ConfiguredPosition {
+        pub x: i32,
+                pub y: i32,
+}
+
+pub struct VrrToSet {
+    #[cfg_attr(
+        feature = "clap",
+        arg(
+            value_name = "ON|OFF",
+            action = clap::ArgAction::Set,
+            value_parser = clap::builder::BoolishValueParser::new(),
+            hide_possible_values = true,
+        ),
+    )]
+    pub vrr: bool,
+        pub on_demand: bool,
+}
+
+pub struct Output {
+        pub name: String,
+                pub make: String,
+                pub model: String,
+                pub serial: String,
+                pub physical_size: (u32, u32),
+                pub modes: Vec<Mode,
+                                pub current_mode: usize,
+                pub vrr_supported: bool,
+                pub vrr_enabled: bool,
+                                pub logical: LogicalOutput,
+}
+
+pub struct Mode {
+        pub width: u16,
+                pub height: u16,
+                pub refresh_rate: u32,
+                pub is_preferred: bool,
+}
+
+pub struct LogicalOutput {
+        pub x: i32,
+                pub y: i32,
+                pub width: u32,
+                pub height: u32,
+                pub scale: f64,
+                pub transform: Transform,
+}
+
+pub enum Transform {
+        Normal,
+        _90,
+_180,
+_270,
+        Flipped,
+Flipped90,
+Flipped180,
+Flipped270,
+}
+
+pub struct Window {
+                                pub id: number,
+                pub title: String,
+                pub app_id: String,
+                                        pub pid: i32,
+                pub workspace_id: number,
+                                pub is_focused: bool,
+                                pub is_floating: bool,
+}
+
+pub enum OutputConfigChanged {
+        Applied,
+        OutputWasMissing,
+}
+
+pub struct Workspace {
+                                pub id: number,
+                                                                        pub idx: u8,
+                pub name: String,
+                                pub output: String,
+                                pub is_active: bool,
+                                pub is_focused: bool,
+                pub active_window_id: number,
+}
+
+pub struct KeyboardLayouts {
+        pub names: Vec<String,
+                pub current_idx: u8,
+}
+
+pub enum Layer {
+        Background,
+        Bottom,
+        Top,
+        Overlay,
+}
+
+pub enum LayerSurfaceKeyboardInteractivity {
+        None,
+        Exclusive,
+        OnDemand,
+}
+
+pub struct LayerSurface {
+        pub namespace: String,
+                pub output: String,
+                pub layer: Layer,
+                pub keyboard_interactivity: LayerSurfaceKeyboardInteractivity,
+}
+
+pub enum Event {
+        WorkspacesChanged {
+                    workspaces: Vec<Workspace,
+},
+WorkspaceActivated {
+        id: number,
+                                        focused: bool,
+},
+WorkspaceActiveWindowChanged {
+        workspace_id: number,
+                active_window_id: number,
+},
+WindowsChanged {
+                    windows: Vec<Window,
+},
+WindowOpenedOrChanged {
+                window: Window,
+},
+WindowClosed {
+        id: number,
+},
+WindowFocusChanged {
+        id: number,
+},
+KeyboardLayoutsChanged {
+        keyboard_layouts: KeyboardLayouts,
+},
+KeyboardLayoutSwitched {
+        idx: u8,
+},
+}
+
+impl FromStr for WorkspaceReferenceArg {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        let reference = if let Ok(index) = s.parse::<i32() {
+        if let Ok(idx) = u8::try_from(index) {
+            Self::Index(idx)
+        } else {
+            return Err("workspace index must be between 0 and 255");
+        }
+    } else {
+        Self::Name(s.to_string())
+    };
+
+    Ok(reference)
+}
+}
+
+impl FromStr for SizeChange {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        match s.split_once('%') {
+        Some((value, empty)) = {
+            if !empty.is_empty() {
+                return Err("trailing characters after '%' are not allowed");
+            }
+
+            match value.bytes().next() {
+                Some(b'-' | b'+') = {
+                    let value = value.parse().map_err(|_| "error parsing value")?;
+                    Ok(Self::AdjustProportion(value))
+                }
+                Some(_) = {
+                    let value = value.parse().map_err(|_| "error parsing value")?;
+                    Ok(Self::SetProportion(value))
+                }
+                None = Err("value is missing"),
+            }
+        }
+        None = {
+            let value = s;
+            match value.bytes().next() {
+                Some(b'-' | b'+') = {
+                    let value = value.parse().map_err(|_| "error parsing value")?;
+                    Ok(Self::AdjustFixed(value))
+                }
+                Some(_) = {
+                    let value = value.parse().map_err(|_| "error parsing value")?;
+                    Ok(Self::SetFixed(value))
+                }
+                None = Err("value is missing"),
+            }
+        }
+    }
+}
+}
+
+impl FromStr for PositionChange {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        let value = s;
+        match value.bytes().next() {
+        Some(b'-' | b'+') = {
+            let value = value.parse().map_err(|_| "error parsing value")?;
+            Ok(Self::AdjustFixed(value))
+        }
+        Some(_) = {
+            let value = value.parse().map_err(|_| "error parsing value")?;
+            Ok(Self::SetFixed(value))
+        }
+        None = Err("value is missing"),
+    }
+}
+}
+
+impl FromStr for LayoutSwitchTarget {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        match s {
+        "next" = Ok(Self::Next),
+            "prev" = Ok(Self::Prev),
+            other = match other.parse() {
+            Ok(layout) = Ok(Self::Index(layout)),
+                _ = Err(r#"invalid layout action, can be "next", "prev" or a layout index"#),
+        },
+    }
+}
+}
+
+impl FromStr for ColumnDisplay {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        match s {
+        "normal" = Ok(Self::Normal),
+            "tabbed" = Ok(Self::Tabbed),
+            _ = Err(r#"invalid column display, can be "normal" or "tabbed""#),
+    }
+}
+}
+
+impl FromStr for Transform {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        match s {
+        "normal" = Ok(Self::Normal),
+            "90" = Ok(Self::_90),
+            "180" = Ok(Self::_180),
+            "270" = Ok(Self::_270),
+            "flipped" = Ok(Self::Flipped),
+            "flipped-90" = Ok(Self::Flipped90),
+            "flipped-180" = Ok(Self::Flipped180),
+            "flipped-270" = Ok(Self::Flipped270),
+            _ = Err(concat!(
+                r#"invalid transform, can be "90", "180", "270", "#,
+        r#""flipped", "flipped-90", "flipped-180" or "flipped-270""#
+    )),
+    }
+}
+}
+
+impl FromStr for ModeToSet {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        if s.eq_ignore_ascii_case("auto") {
+        return Ok(Self::Automatic);
+    }
+
+    let mode = s.parse()?;
+    Ok(Self::Specific(mode))
+}
+}
+
+impl FromStr for ConfiguredMode {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        let Some((width, rest)) = s.split_once('x') else {
+            return Err("no 'x' separator found");
         };
+
+        let (height, refresh) = match rest.split_once('@') {
+        Some((height, refresh)) = (height, Some(refresh)),
+            None = (rest, None),
+    };
+
+    let width = width.parse().map_err(|_| "error parsing width")?;
+    let height = height.parse().map_err(|_| "error parsing height")?;
+    let refresh = refresh
+        .map(str::parse)
+        .transpose()
+        .map_err(|_| "error parsing refresh rate")?;
+
+    Ok(Self {
+        width,
+            height,
+            refresh,
+    })
+}
+}
+
+impl FromStr for ScaleToSet {
+    type Err = &'static str;
+
+    fn from_str(s: &str) - Result<Self, Self::Err {
+        if s.eq_ignore_ascii_case("auto") {
+        return Ok(Self::Automatic);
     }
+
+    let scale = s.parse().map_err(|_| "error parsing scale")?;
+    Ok(Self::Specific(scale))
 }
-
-const IPCRequestOutputAction = {
-    setOutput: () => {}
 }
-
-class OutputAction {
-    
-}
-
-//
-// The Result type and Reply alias
-//
-export type Reply = Promise<IPCResponse>;
-
-interface IHandledResponse { type: "Handled" }
-interface IVersionResponse { type: "Version"; version: string }
-interface IOutputsResponse { type: "Outputs"; outputs: { [key: string]: Output } }
-interface IWorkspacesResponse { type: "Workspaces"; workspaces: Workspace[] }
-interface IWindowsResponse { type: "Windows"; windows: Window[] }
-interface ILayersResponse { type: "Layers"; layers: LayerSurface[] }
-interface IKeyboardLayoutsResponse { type: "KeyboardLayouts"; keyboardLayouts: KeyboardLayouts }
-interface IFocusedOutputResponse { type: "FocusedOutput"; focusedOutput: Output | null }
-interface IFocusedWindowResponse { type: "FocusedWindow"; focusedWindow: Window | null }
-interface IPickedWindowResponse { type: "PickedWindow"; pickedWindow: Window | null }
-interface IOutputConfigChangedResponse { type: "OutputConfigChanged"; outputConfigChanged: OutputConfigChanged }
-//
-// Enum Response
-//
-export type IPCResponse = 
-    IHandledResponse
-    | IVersionResponse
-    | IOutputsResponse
-    | IWorkspacesResponse
-    | IWindowsResponse
-    | ILayersResponse
-    | IKeyboardLayoutsResponse
-    | IFocusedOutputResponse
-    | IFocusedWindowResponse
-    | IPickedWindowResponse
-    | IOutputConfigChangedResponse
-
-
-//
-// Enum SizeChange
-//
-export type SizeChange =
-    | { type: "SetFixed"; value: number }
-    | { type: "SetProportion"; value: number }
-    | { type: "AdjustFixed"; value: number }
-    | { type: "AdjustProportion"; value: number };
-
-//
-// Enum PositionChange
-//
-export type PositionChange =
-    | { type: "SetFixed"; value: number }
-    | { type: "AdjustFixed"; value: number };
-
-//
-// Enum WorkspaceReferenceArg
-//
-export type WorkspaceReferenceArg =
-    | { type: "Id"; value: number }
-    | { type: "Index"; value: number }
-    | { type: "Name"; value: string };
-
-//
-// Enum LayoutSwitchTarget
-//
-export type LayoutSwitchTarget =
-    | { type: "Next" }
-    | { type: "Prev" }
-    | { type: "Index"; index: number };
-
-//
-// Enum ColumnDisplay
-//
-export enum ColumnDisplay {
-    Normal = "normal",
-    Tabbed = "tabbed"
-}
-
-//
-// Enum OutputAction
-//
-export type tOutputAction =
-    | { type: "Off" }
-    | { type: "On" }
-    | { type: "Mode"; mode: ModeToSet }
-    | { type: "Scale"; scale: ScaleToSet }
-    | { type: "Transform"; transform: Transform }
-    | { type: "Position"; position: PositionToSet }
-    | { type: "Vrr"; vrr: VrrToSet };
-
-//
-// Enum ModeToSet
-//
-export type ModeToSet =
-    | { type: "Automatic" }
-    | { type: "Specific"; mode: ConfiguredMode };
-
-//
-// Struct ConfiguredMode
-//
-export interface ConfiguredMode {
-    width: number;
-    height: number;
-    refresh: number | null;
-}
-
-//
-// Enum ScaleToSet
-//
-export type ScaleToSet =
-    | { type: "Automatic" }
-    | { type: "Specific"; scale: number };
-
-//
-// Enum PositionToSet
-//
-export type PositionToSet =
-    | { type: "Automatic" }
-    | { type: "Specific"; position: ConfiguredPosition };
-
-//
-// Struct ConfiguredPosition
-//
-export interface ConfiguredPosition {
-    x: number;
-    y: number;
-}
-
-//
-// Struct VrrToSet
-//
-export interface VrrToSet {
-    vrr: boolean;
-    on_demand: boolean;
-}
-
-//
-// Struct Output
-//
-export interface Output {
-    name: string;
-    make: string;
-    model: string;
-    serial: string | null;
-    physical_size: [number, number] | null;
-    modes: Mode[];
-    current_mode: number | null;
-    vrr_supported: boolean;
-    vrr_enabled: boolean;
-    logical: LogicalOutput | null;
-}
-
-//
-// Struct Mode
-//
-export interface Mode {
-    width: number;
-    height: number;
-    refresh_rate: number;
-    is_preferred: boolean;
-}
-
-//
-// Struct LogicalOutput
-//
-export interface LogicalOutput {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    scale: number;
-    transform: Transform;
-}
-
-//
-// Enum Transform
-//
-export enum Transform {
-    Normal = "normal",
-    _90 = "90",
-    _180 = "180",
-    _270 = "270",
-    Flipped = "flipped",
-    Flipped90 = "flipped-90",
-    Flipped180 = "flipped-180",
-    Flipped270 = "flipped-270"
-}
-
-//
-// Struct Window
-//
-export interface Window {
-    id: number;
-    title: string | null;
-    app_id: string | null;
-    pid: number | null;
-    workspace_id: number | null;
-    is_focused: boolean;
-    is_floating: boolean;
-}
-
-//
-// Enum OutputConfigChanged
-//
-export enum OutputConfigChanged {
-    Applied = "Applied",
-    OutputWasMissing = "OutputWasMissing"
-}
-
-//
-// Struct Workspace
-//
-export interface Workspace {
-    id: number;
-    idx: number;
-    name: string | null;
-    output: string | null;
-    is_active: boolean;
-    is_focused: boolean;
-    active_window_id: number | null;
-}
-
-//
-// Struct KeyboardLayouts
-//
-export interface KeyboardLayouts {
-    names: string[];
-    current_idx: number;
-}
-
-//
-// Enum Layer
-//
-export enum Layer {
-    Background = "Background",
-    Bottom = "Bottom",
-    Top = "Top",
-    Overlay = "Overlay"
-}
-
-//
-// Enum LayerSurfaceKeyboardInteractivity
-//
-export enum LayerSurfaceKeyboardInteractivity {
-    None = "None",
-    Exclusive = "Exclusive",
-    OnDemand = "OnDemand"
-}
-
-//
-// Struct LayerSurface
-//
-export interface LayerSurface {
-    namespace: string;
-    output: string;
-    layer: Layer;
-    keyboard_interactivity: LayerSurfaceKeyboardInteractivity;
-}
-
-//
-// Enum Event
-//
-export type Event =
-    | { type: "WorkspacesChanged"; workspaces: Workspace[] }
-    | { type: "WorkspaceActivated"; id: number; focused: boolean }
-    | { type: "WorkspaceActiveWindowChanged"; workspace_id: number; active_window_id: number | null }
-    | { type: "WindowsChanged"; windows: Window[] }
-    | { type: "WindowOpenedOrChanged"; window: Window }
-    | { type: "WindowClosed"; id: number }
-    | { type: "WindowFocusChanged"; id: number | null }
-    | { type: "KeyboardLayoutsChanged"; keyboard_layouts: KeyboardLayouts }
-    | { type: "KeyboardLayoutSwitched"; idx: number };
-
-export function parseWorkspaceReferenceArg(s: string) {
-    const index = parseInt(s);
-    if (!isNaN(index)) {
-        if (index >= 0 && index <= 255) {
-            return { type: "Index", value: index };
-        } else {
-            throw "workspace index must be between 0 and 255";
-        }
-    } else {
-        return { type: "Name", value: s };
-    }
-}
-
-//
-// Implementation of FromStr for SizeChange
-//
-export function parseSizeChange(s : string) {
-    if (s.indexOf('%') !== -1) {
-        const parts = s.split('%');
-        if (parts[1] !== "") {
-            throw "trailing characters after '%' are not allowed";
-        }
-        const valueStr = parts[0];
-        const firstChar = valueStr.charAt(0);
-        if (firstChar === '-' || firstChar === '+') {
-            const value = parseFloat(valueStr);
-            if (isNaN(value)) throw "error parsing value";
-            return { type: "AdjustProportion", value };
-        } else {
-            const value = parseFloat(valueStr);
-            if (isNaN(value)) throw "error parsing value";
-            return { type: "SetProportion", value };
-        }
-    } else {
-        const valueStr = s;
-        const firstChar = valueStr.charAt(0);
-        if (firstChar === '-' || firstChar === '+') {
-            const value = parseInt(valueStr);
-            if (isNaN(value)) throw "error parsing value";
-            return { type: "AdjustFixed", value };
-        } else {
-            const value = parseInt(valueStr);
-            if (isNaN(value)) throw "error parsing value";
-            return { type: "SetFixed", value };
-        }
-    }
-}
-
-//
-// Implementation of FromStr for PositionChange
-//
-export function parsePositionChange(s : string) {
-    const valueStr = s;
-    const firstChar = valueStr.charAt(0);
-    if (firstChar === '-' || firstChar === '+') {
-        const value = parseFloat(valueStr);
-        if (isNaN(value)) throw "error parsing value";
-        return { type: "AdjustFixed", value };
-    } else {
-        const value = parseFloat(valueStr);
-        if (isNaN(value)) throw "error parsing value";
-        return { type: "SetFixed", value };
-    }
-}
-
-//
-// Implementation of FromStr for LayoutSwitchTarget
-//
-export function parseLayoutSwitchTarget(s : string) {
-    if (s === "next") {
-        return { type: "Next" };
-    }
-    if (s === "prev") {
-        return { type: "Prev" };
-    }
-    const layout = parseInt(s);
-    if (!isNaN(layout)) {
-        return { type: "Index", index: layout };
-    } else {
-        throw 'invalid layout action, can be "next", "prev" or a layout index';
-    }
-}
-
-//
-// Implementation of FromStr for ColumnDisplay
-//
-export function parseColumnDisplay(s : string){
-    if (s === "normal") {
-        return ColumnDisplay.Normal;
-    }
-    if (s === "tabbed") {
-        return ColumnDisplay.Tabbed;
-    }
-    throw 'invalid column display, can be "normal" or "tabbed"';
-}
-
-//
-// Implementation of FromStr for Transform
-//
-export function parseTransform(s : string) {
-    switch (s) {
-        case "normal":
-            return Transform.Normal;
-        case "90":
-            return Transform._90;
-        case "180":
-            return Transform._180;
-        case "270":
-            return Transform._270;
-        case "flipped":
-            return Transform.Flipped;
-        case "flipped-90":
-            return Transform.Flipped90;
-        case "flipped-180":
-            return Transform.Flipped180;
-        case "flipped-270":
-            return Transform.Flipped270;
-        default:
-            throw 'invalid transform, can be "90", "180", "270", "flipped", "flipped-90", "flipped-180" or "flipped-270"';
-    }
-}
-
-//
-// Implementation of FromStr for ModeToSet
-//
-export function parseModeToSet(s : string) {
-    if (s.toLowerCase() === "auto") {
-        return { type: "Automatic" };
-    }
-    const mode = parseConfiguredMode(s);
-    return { type: "Specific", mode };
-}
-
-//
-// Implementation of FromStr for ConfiguredMode
-//
-export function parseConfiguredMode(s : string) {
-    const splitX = s.split("x");
-    if (splitX.length < 2) {
-        throw "no 'x' separator found";
-    }
-    const widthStr = splitX[0];
-    const rest = splitX.slice(1).join("x");
-    let heightStr;
-    let refreshStr = null;
-    if (rest.indexOf("@") !== -1) {
-        const parts = rest.split("@");
-        heightStr = parts[0];
-        refreshStr = parts[1];
-    } else {
-        heightStr = rest;
-    }
-    const width = parseInt(widthStr);
-    if (isNaN(width)) throw "error parsing width";
-    const height = parseInt(heightStr);
-    if (isNaN(height)) throw "error parsing height";
-    let refresh = null;
-    if (refreshStr !== null) {
-        refresh = parseFloat(refreshStr);
-        if (isNaN(refresh)) throw "error parsing refresh rate";
-    }
-    return { width, height, refresh };
-}
-
-//
-// Implementation of FromStr for ScaleToSet
-//
-export function parseScaleToSet(s : string) {
-    if (s.toLowerCase() === "auto") {
-        return { type: "Automatic" };
-    }
-    const scale = parseFloat(s);
-    if (isNaN(scale)) throw "error parsing scale";
-    return { type: "Specific", scale };
-}
-

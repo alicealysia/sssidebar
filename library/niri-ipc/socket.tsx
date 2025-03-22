@@ -27,7 +27,8 @@ export class IPCSocket {
     /// This method also returns a blocking function that you can call to keep reading [`Event`]s
     /// after requesting an [`EventStream`][Request::EventStream]. This function is not useful
     /// otherwise.
-    public send = async (request: IPCRequest) => {
+    public send = async (request: IPCRequest.RequestType) => {
+        console.log (request);
         let connection = this.connect();
         await connection.get_output_stream().write_async(JSON.stringify(request) + "\n", GLib.PRIORITY_DEFAULT); //Max, why is there a null in the original? Please explain.
 
