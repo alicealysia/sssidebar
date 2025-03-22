@@ -1,77 +1,4 @@
-//! Helpers for keeping track of the event stream state.
-//!
-//! 1. Create an [`EventStreamState`] using `Default::default()`, or any individual state part if
-//!    you only care about part of the state.
-//! 2. Connect to the niri socket and request an event stream.
-//! 3. Pass every [`Event`] to [`EventStreamStatePart::apply`] on your state.
-//! 4. Read the fields of the state as needed.
-
-//
-// Required type definitions and imports
-//
-
-// Define the Event discriminated union type.
-export type Event =
-    | { type: "WorkspacesChanged"; workspaces: Workspace[] }
-    | { type: "WorkspaceActivated"; id: number; focused: boolean }
-    | { type: "WorkspaceActiveWindowChanged"; workspace_id: number; active_window_id: number }
-    | { type: "WindowsChanged"; windows: Window[] }
-    | { type: "WindowOpenedOrChanged"; window: Window }
-    | { type: "WindowClosed"; id: number }
-    | { type: "WindowFocusChanged"; id: number }
-    | { type: "KeyboardLayoutsChanged"; keyboard_layouts: KeyboardLayouts }
-    | { type: "KeyboardLayoutSwitched"; idx: number };
-
-// Define the Workspace type.
-export class Workspace {
-    id: number;
-    output: string;
-    is_active: boolean;
-    is_focused: boolean;
-    active_window_id: number | null;
-
-    constructor(id: number, output: string, is_active: boolean, is_focused: boolean, active_window_id: number | null = null) {
-        this.id = id;
-        this.output = output;
-        this.is_active = is_active;
-        this.is_focused = is_focused;
-        this.active_window_id = active_window_id;
-    }
-
-    // A simple clone method to mimic Rust's clone.
-    clone(): Workspace {
-        return new Workspace(this.id, this.output, this.is_active, this.is_focused, this.active_window_id);
-    }
-}
-
-// Define the Window type.
-export class Window {
-    id: number;
-    is_focused: boolean;
-
-    constructor(id: number, is_focused: boolean) {
-        this.id = id;
-        this.is_focused = is_focused;
-    }
-
-    clone(): Window {
-        return new Window(this.id, this.is_focused);
-    }
-}
-
-// Define the KeyboardLayouts type.
-export class KeyboardLayouts {
-    current_idx: number;
-    // You can add additional properties as needed
-
-    constructor(current_idx: number) {
-        this.current_idx = current_idx;
-    }
-
-    clone(): KeyboardLayouts {
-        return new KeyboardLayouts(this.current_idx);
-    }
-}
+import { Event, Workspace, Window, KeyboardLayouts, EventTypes } from './lib';
 
 //
 // Define the EventStreamStatePart interface which represents part of the state
@@ -149,43 +76,49 @@ export class WorkspacesState implements EventStreamStatePart {
         const workspacesArr: Workspace[] = [];
         this.workspaces.forEach((ws) => {
             // Using clone() to mimic Rust's cloned() behavior.
-            workspacesArr.push(ws.clone());
+            workspacesArr.push(Object.assign({}, ws));
         });
-        return [{ type: "WorkspacesChanged", workspaces: workspacesArr }];
+        return [{ WorkspacesChanged: {workspaces: workspacesArr }}];
     }
 
     apply(event: Event): Event | undefined {
-        if (event.type === "WorkspacesChanged") {
-            this.workspaces = new Map<number, Workspace>();
-            for (const ws of event.workspaces) {
-                // Using clone() if needed
-                this.workspaces.set(ws.id, ws.clone());
-            }
-        } else if (event.type === "WorkspaceActivated") {
-            const ws = this.workspaces.get(event.id);
-            if (!ws) {
-                throw new Error("activated workspace was missing from the map");
-            }
-            const output = ws.output;
-            this.workspaces.forEach((wsItem) => {
-                const got_activated = wsItem.id === event.id;
-                if (wsItem.output === output) {
-                    wsItem.is_active = got_activated;
+        const workspaceTypeDiscriminator = Object.keys(event)[0];
+        switch (workspaceTypeDiscriminator) {
+            case "WorkspacesChanged":
+                const workspacesChanged = (event as EventTypes.WorkspacesChanged).WorkspacesChanged
+                this.workspaces = new Map<number, Workspace>();
+                for (let workspace of workspacesChanged.workspaces) {
+                    this.workspaces.set(workspace.id, Object.assign({}, workspace));
                 }
-                if (event.focused) {
-                    wsItem.is_focused = got_activated;
+                return
+            case "WorkspaceActivated":
+                const workspacesActivated = (event as EventTypes.WorkspaceActivated).WorkspaceActivated;
+                const activeWorkspace = this.workspaces.get(workspacesActivated.id);
+                if (!activeWorkspace) {
+                    throw new Error("activated workspace was missing from the map");
                 }
-            });
-        } else if (event.type === "WorkspaceActiveWindowChanged") {
-            const ws = this.workspaces.get(event.workspace_id);
-            if (!ws) {
-                throw new Error("changed workspace was missing from the map");
-            }
-            ws.active_window_id = event.active_window_id;
-        } else {
-            return event;
+                const output = activeWorkspace.output;
+                this.workspaces.forEach((wsItem) => {
+                    const got_activated = wsItem.id === workspacesActivated.id;
+                    if (wsItem.output === output) {
+                        wsItem.is_active = got_activated;
+                    }
+                    if (workspacesActivated.focused) {
+                        wsItem.is_focused = got_activated;
+                    }
+                });
+                return
+            case "WorkspaceActiveWindowChanged":
+                const workspaceActiveWindowChanged = (event as EventTypes.WorkspaceActiveWindowChanged).WorkspaceActiveWindowChanged
+                const parentWorkspace = this.workspaces.get(workspaceActiveWindowChanged.workspace_id);
+                if (!parentWorkspace) {
+                    throw new Error("changed workspace was missing from the map");
+                }
+                parentWorkspace.active_window_id = workspaceActiveWindowChanged.active_window_id;
+                return
+            default:
+                return event;
         }
-        return undefined;
     }
 }
 
@@ -203,53 +136,56 @@ export class WindowsState implements EventStreamStatePart {
     replicate(): Event[] {
         const windowsArr: Window[] = [];
         this.windows.forEach((win) => {
-            windowsArr.push(win.clone());
+            windowsArr.push(Object.assign({}, win));
         });
-        return [{ type: "WindowsChanged", windows: windowsArr }];
+        return [{ WindowsChanged: {windows: windowsArr }}];
     }
 
     apply(event: Event): Event | undefined {
-        if (event.type === "WindowsChanged") {
-            this.windows = new Map<number, Window>();
-            for (const win of event.windows) {
-                this.windows.set(win.id, win.clone());
-            }
-        } else if (event.type === "WindowOpenedOrChanged") {
-            const windowObj = event.window;
-            if (this.windows.has(windowObj.id)) {
-                // Update the existing entry.
-                const entry = this.windows.get(windowObj.id)!;
-                // Replace with new window data.
+        switch (Object.keys(event)[0]) {
+            case "WindowsChanged":
+                const windowsChanged = (event as EventTypes.WindowsChanged).WindowsChanged;
+                this.windows = new Map<number, Window>();
+                for (const win of windowsChanged.windows) {
+                    this.windows.set(win.id, Object.assign({}, win));
+                }
+                return;
+            case "WindowOpenedOrChanged":
+                const windowOpenedOrChanged = (event as EventTypes.WindowOpenedOrChanged).WindowOpenedOrChanged;
+                const windowObj = windowOpenedOrChanged.window;
+                if (this.windows.has(windowObj.id)) {
+                    // Update the existing entry.
+                    const entry = this.windows.get(windowObj.id)!;
+                }
+                    // Replace with new window data.
                 this.windows.set(windowObj.id, windowObj);
-                var id = windowObj.id;
-                var is_focused = windowObj.is_focused;
-            } else {
-                // Insert new entry.
-                this.windows.set(windowObj.id, windowObj);
-                var id = windowObj.id;
-                var is_focused = windowObj.is_focused;
-            }
-            if (is_focused) {
-                this.windows.forEach((win, key) => {
-                    if (win.id !== id) {
-                        win.is_focused = false;
-                    }
+                let id = windowObj.id;
+                let is_focused = windowObj.is_focused;
+                if (is_focused) {
+                    this.windows.forEach((win, key) => {
+                        if (win.id !== id) {
+                            win.is_focused = false;
+                        }
+                    });
+                }
+                return;
+            case "WindowClosed":
+                const windowClosed = (event as EventTypes.WindowClosed).WindowClosed;
+                const win = this.windows.get(windowClosed.id);
+                if (!win) {
+                    throw new Error("closed window was missing from the map");
+                }
+                this.windows.delete(windowClosed.id);
+                return;
+            case "WindowFocusChanged":
+                const windowFocusChanged = (event as EventTypes.WindowFocusChanged).WindowFocusChanged;
+                this.windows.forEach((win) => {
+                    win.is_focused = win.id === windowFocusChanged.id;
                 });
-            }
-        } else if (event.type === "WindowClosed") {
-            const win = this.windows.get(event.id);
-            if (!win) {
-                throw new Error("closed window was missing from the map");
-            }
-            this.windows.delete(event.id);
-        } else if (event.type === "WindowFocusChanged") {
-            this.windows.forEach((win) => {
-                win.is_focused = win.id === event.id;
-            });
-        } else {
-            return event;
+                return;
+            default:
+                return event;
         }
-        return undefined;
     }
 }
 
@@ -266,23 +202,27 @@ export class KeyboardLayoutsState implements EventStreamStatePart {
 
     replicate(): Event[] {
         if (this.keyboard_layouts !== undefined) {
-            return [{ type: "KeyboardLayoutsChanged", keyboard_layouts: this.keyboard_layouts.clone() }];
+            return [{KeyboardLayoutsChanged: {keyboard_layouts: Object.assign({}, this.keyboard_layouts )}}];
         } else {
             return [];
         }
     }
 
     apply(event: Event): Event | undefined {
-        if (event.type === "KeyboardLayoutsChanged") {
-            this.keyboard_layouts = event.keyboard_layouts;
-        } else if (event.type === "KeyboardLayoutSwitched") {
-            if (this.keyboard_layouts === undefined) {
-                throw new Error("keyboard layouts must be set before a layout can be switched");
-            }
-            this.keyboard_layouts.current_idx = event.idx;
-        } else {
-            return event;
+        switch (Object.keys(event)[0]) {
+            case "KeyboardLayoutsChanged":
+                const keyboardLayoutsChanged = (event as EventTypes.KeyboardLayoutsChanged).KeyboardLayoutsChanged;
+                this.keyboard_layouts = keyboardLayoutsChanged.keyboard_layouts;
+                return;
+            case "KeyboardLayoutSwitched":
+                const keyboardLayoutSwitched = (event as EventTypes.KeyboardLayoutSwitched).KeyboardLayoutSwitched;
+                if (this.keyboard_layouts === undefined) {
+                    throw new Error("keyboard layouts must be set before a layout can be switched");
+                }
+                this.keyboard_layouts.current_idx = keyboardLayoutSwitched.idx;
+                return;
+            default:
+                return event;
         }
-        return undefined;
     }
 }

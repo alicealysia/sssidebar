@@ -305,13 +305,51 @@ export interface LayerSurface {
     keyboard_interactivity: LayerSurfaceKeyboardInteractivity,
 }
 
-export type Event =
-    { WorkspacesChanged: { workspaces: Workspace[] } }
-    | { WorkspaceActivated: { id: number, focused: boolean } }
-    | { WorkspaceActiveWindowChanged: { workspace_id: number, active_window_id: number, } }
-    | { WindowsChanged: { windows: Window } }
-    | { WindowOpenedOrChanged: { window: Window } }
-    | { WindowClosed: { id: number } }
-    | { WindowFocusChanged: { id?: number } }
-    | { KeyboardLayoutsChanged: { keyboard_layouts: KeyboardLayouts } }
-    | { KeyboardLayoutSwitched: { idx: number } }
+export namespace EventTypes {
+    export interface WorkspacesChanged {
+        WorkspacesChanged: { workspaces: Workspace[] }
+    }
+
+    export interface WorkspaceActivated {
+        WorkspaceActivated: { id: number, focused: boolean }
+    }
+
+    export interface WorkspaceActiveWindowChanged {
+        WorkspaceActiveWindowChanged: { workspace_id: number, active_window_id: number, }
+    }
+
+    export interface WindowsChanged {
+        WindowsChanged: { windows: Window[] }
+    }
+
+    export interface WindowOpenedOrChanged {
+        WindowOpenedOrChanged: { window: Window }
+    }
+
+    export interface WindowClosed {
+        WindowClosed: { id: number }
+    }
+
+    export interface WindowFocusChanged {
+        WindowFocusChanged: { id?: number }
+    }
+
+    export interface KeyboardLayoutsChanged {
+        KeyboardLayoutsChanged: { keyboard_layouts: KeyboardLayouts }
+    }
+
+    export interface KeyboardLayoutSwitched {
+        KeyboardLayoutSwitched: { idx: number }
+    }
+}
+
+export type Event = 
+    EventTypes.WorkspacesChanged
+    | EventTypes.WorkspaceActivated
+    | EventTypes.WorkspaceActiveWindowChanged
+    | EventTypes.WindowsChanged
+    | EventTypes.WindowOpenedOrChanged
+    | EventTypes.WindowClosed
+    | EventTypes.WindowFocusChanged
+    | EventTypes.KeyboardLayoutsChanged
+    | EventTypes.KeyboardLayoutSwitched

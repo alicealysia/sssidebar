@@ -1,4 +1,4 @@
-import {IPCRequest, Reply, IPCResponse as LibResponse} from "./lib";
+import {IPCRequest, IPCResponse} from "./lib";
 import {Gio, GLib} from "astal"
 /// Name of the environment variable containing the niri IPC socket path.
 export const SOCKET_PATH_ENV: string = "NIRI_SOCKET";
@@ -27,7 +27,7 @@ export class IPCSocket {
     /// This method also returns a blocking function that you can call to keep reading [`Event`]s
     /// after requesting an [`EventStream`][Request::EventStream]. This function is not useful
     /// otherwise.
-    public send = async (request: IPCRequest.RequestType) => {
+    public send = async (request: IPCRequest) => {
         console.log (request);
         let connection = this.connect();
         await connection.get_output_stream().write_async(JSON.stringify(request) + "\n", GLib.PRIORITY_DEFAULT); //Max, why is there a null in the original? Please explain.
@@ -37,13 +37,13 @@ export class IPCSocket {
             baseStream: connection.get_input_stream()
         })
         
-        let read_buffer: Reply = reader
+        let read_buffer: Promise<IPCResponse> = reader
             .read_line_async(GLib.PRIORITY_DEFAULT)
             .then((value) => {
                 if (value[0] == null) {
                     throw new Error()
                 }
-                return (JSON.parse(value[0].toString()) as LibResponse);
+                return (JSON.parse(value[0].toString()) as IPCResponse);
             });
         
         let events = async () => {
@@ -53,7 +53,7 @@ export class IPCSocket {
                 if (value[0] == null) {
                     throw new Error()
                 }
-                return (JSON.parse(value[0].toString()) as LibResponse);
+                return (JSON.parse(value[0].toString()) as IPCResponse);
             })
         }
         
